@@ -1,0 +1,31 @@
+{
+  "name": "maria_api",
+  "version": "1.0.0",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node app.js",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shoaib4447/maria_api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shoaib4447/maria_api/issues"
+  },
+  "homepage": "https://github.com/Shoaib4447/maria_api#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mariadb": "^3.4.4",
+    "nodemon": "^3.1.10"
+  },
+  "devDependencies": {},
+  "description": ""
+}
