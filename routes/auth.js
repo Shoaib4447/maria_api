@@ -19,8 +19,8 @@ router.post("/login", async (req, res) => {
       expiresIn: "30d",
     });
 
-    console.log("Access Token:", accessToken);
-    console.log("Refresh Token:", refreshToken);
+    // console.log("Access Token:", accessToken);
+    // console.log("Refresh Token:", refreshToken);
 
     // Store tokens in db
     const conn = await pool.getConnection();
@@ -36,6 +36,66 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/refresh", async (req, res) => {});
+router.post("/refresh", async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken)
+    return res.status(400).json({ error: "Refresh token required" });
+
+  try {
+    //   Checking resfresh token exist in db
+    const conn = await pool.getConnection();
+    const rows = await conn.query(
+      "SELECT * FROM users WHERE refresh_token = ?",
+      [refreshToken]
+    );
+    conn.release();
+    if (rows.length === 0)
+      return res.status(403).json({ error: "Invalid refresh token" });
+
+    //   Verify the token
+    jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, user) => {
+      if (err)
+        return res.status(403).json({ error: "Token expired or invalid" });
+
+      //   Generate new access token
+      const newAccessToken = jwt.sign(
+        { username: user.username },
+        process.env.ACCESS_SECRET,
+        { expiresIn: "10m" }
+      );
+      res.json({ accessToken: newAccessToken });
+    });
+  } catch (error) {
+    console.error("Refresh error:", error);
+    res.status(500).json({ error: "Failed to refresh token" });
+  }
+});
+
+router.post("/logout", async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken)
+    return res.status(403).json({ error: "Refresh token required" });
+
+  try {
+    const conn = await pool.getConnection();
+
+    // Clear refresh token from the DB
+    const results = await conn.query(
+      "DELETE FROM users WHERE refresh_token = ?",
+      [refreshToken]
+    );
+    conn.release();
+
+    if (results.affectedRows === 0) {
+      return res
+        .status(403)
+        .json({ error: "Token not found or already removed" });
+    }
+    res.json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    res.status(500).json({ error: "Logout failed" });
+  }
+});
 
 export default router;
