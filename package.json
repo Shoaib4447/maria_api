@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Shoaib4447/maria_api#readme",
   "dependencies": {
+    "axios": "^1.10.0",
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
@@ -26,6 +27,5 @@
     "mariadb": "^3.4.4",
     "nodemon": "^3.1.10"
   },
-  "devDependencies": {},
   "description": ""
 }

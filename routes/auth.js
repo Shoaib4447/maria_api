@@ -2,11 +2,17 @@ import express from "express";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import pool from "../db.js";
+import {
+  validateLogin,
+  validateRefreshToken,
+  validateConfiguration,
+  validateId,
+} from "../middleware/validationMiddleware.js";
 
 dotenv.config();
 const router = express.Router();
 
-router.post("/login", async (req, res) => {
+router.post("/login", validateLogin, async (req, res) => {
   const { username } = req.body;
 
   if (!username) return res.status(400).json({ error: "Username is required" });
@@ -36,7 +42,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/refresh", async (req, res) => {
+router.post("/refresh", validateRefreshToken, async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken)
     return res.status(400).json({ error: "Refresh token required" });
@@ -71,7 +77,7 @@ router.post("/refresh", async (req, res) => {
   }
 });
 
-router.post("/logout", async (req, res) => {
+router.post("/logout", validateRefreshToken, async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken)
     return res.status(403).json({ error: "Refresh token required" });

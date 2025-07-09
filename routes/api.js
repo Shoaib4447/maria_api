@@ -1,6 +1,12 @@
 import express from "express";
 import pool from "../db.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import {
+  validateLogin,
+  validateRefreshToken,
+  validateConfiguration,
+  validateId,
+} from "../middleware/validationMiddleware.js";
 
 const router = express.Router();
 
@@ -25,7 +31,7 @@ router.get("/config", async (req, res) => {
 });
 
 // POST a new configuration
-router.post("/config", async (req, res) => {
+router.post("/config", validateConfiguration, async (req, res) => {
   const { configuration_url } = req.body;
   if (!configuration_url) {
     return res.status(400).json({ error: "configuration_url is required" });
@@ -48,7 +54,7 @@ router.post("/config", async (req, res) => {
 });
 
 // UPDATE a configuration by ID
-router.put("/config/:id", async (req, res) => {
+router.put("/config/:id", validateId, async (req, res) => {
   const configuration_url = req.body.configuration_url?.trim();
   const id = Number(req.params.id);
 
@@ -74,7 +80,7 @@ router.put("/config/:id", async (req, res) => {
 });
 
 // DELETE a configuration by ID
-router.delete("/config/:id", async (req, res) => {
+router.delete("/config/:id", validateId, async (req, res) => {
   const { id } = req.params;
 
   try {
