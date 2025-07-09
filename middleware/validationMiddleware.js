@@ -18,7 +18,7 @@ export const validateRefreshToken = (req, res, next) => {
   if (
     !refreshToken ||
     typeof refreshToken !== "string" ||
-    refreshToken.trim.length === 0
+    refreshToken.trim().length === 0
   ) {
     return res.status(400).json({
       error: "Refresh token is required and must be a non-empty string",

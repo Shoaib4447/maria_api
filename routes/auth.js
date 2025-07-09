@@ -10,8 +10,10 @@ import {
 } from "../middleware/validationMiddleware.js";
 
 dotenv.config();
+// Create a router for the auth routes
 const router = express.Router();
 
+// POST request to /login
 router.post("/login", validateLogin, async (req, res) => {
   const { username } = req.body;
 
@@ -42,6 +44,7 @@ router.post("/login", validateLogin, async (req, res) => {
   }
 });
 
+// POST request to /refresh
 router.post("/refresh", validateRefreshToken, async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken)
@@ -77,6 +80,7 @@ router.post("/refresh", validateRefreshToken, async (req, res) => {
   }
 });
 
+// POST request to /logout
 router.post("/logout", validateRefreshToken, async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken)
